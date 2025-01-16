@@ -1,20 +1,96 @@
-// 10-4-dynamic-array-class-insert-and-erase-ingridgobierno.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <string>
+using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+class DynamicArray {
+private:
+    int size;
+    int capacity;
+    string* array;
+
+public:
+    // constructor
+    DynamicArray(int initialCapacity) {
+        size = 0;
+        capacity = initialCapacity;
+        array = new string[capacity];
+    }
+
+    // destructor
+    ~DynamicArray() {
+        delete[] array;
+    }
+
+    // inserta un element
+    bool insert(string newElement, int position) {
+        if (position < 0 || position > size) {
+            return false; // posició no vàlida
+        }
+
+        if (size == capacity) {
+            // ampliem la capacitat
+            capacity *= 2;
+            string* newArray = new string[capacity];
+            for (int i = 0; i < size; i++) {
+                newArray[i] = array[i];
+            }
+            delete[] array;
+            array = newArray;
+        }
+
+        for (int i = size; i > position; i--) {
+            array[i] = array[i - 1];
+        }
+
+        array[position] = newElement;
+        size++;
+        return true;
+    }
+
+    // elimina un element
+    bool remove(int position) {
+        if (position < 0 || position >= size) {
+            return false; // posició no vàlida
+        }
+
+        for (int i = position; i < size - 1; i++) {
+            array[i] = array[i + 1];
+        }
+
+        size--;
+        return true;
+    }
+
+    // imprimeix l'array
+    void print() {
+        cout << "{";
+        for (int i = 0; i < size; i++) {
+            cout << array[i];
+            if (i < size - 1) cout << ", ";
+        }
+        cout << "}" << endl;
+    }
+};
+
+int main() {
+    DynamicArray arr(5);
+
+    arr.insert("zero", 0);
+    arr.insert("one", 1);
+    arr.insert("two", 2);
+    arr.insert("three", 3);
+    arr.insert("four", 4);
+
+    cout << "array inicial: ";
+    arr.print();
+
+    cout << "Inserim 'five' a la posicio 5:" << endl;
+    arr.insert("five", 5);
+    arr.print();
+
+    cout << "Eliminem l'element a la posicio 2:" << endl;
+    arr.remove(2);
+    arr.print();
+
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
